@@ -1,0 +1,12 @@
+{
+  "groups": [
+    {
+      "name": "spring.datasource.hikari",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.ssnc.ldapAd.config.DatasourceConfig",
+      "sourceMethod": "public javax.sql.DataSource hikariConfig() throws java.lang.Exception"
+    }
+  ],
+  "properties": [],
+  "hints": []
+}
