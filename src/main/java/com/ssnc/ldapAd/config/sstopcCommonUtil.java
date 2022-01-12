@@ -33,7 +33,7 @@ public class sstopcCommonUtil {
     	Properties properties = new Properties();
     	properties.load(resources);
     	// LDAP://192.168.1.100
-    	
+    	// LDAP://127.0.0.1:389
     	String pw = properties.getProperty("ldap_ip");
     	return pw;
 	}
