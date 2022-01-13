@@ -1,6 +1,6 @@
 package com.ssnc.ldapAd.config;
 
-public class poWelsConstant {
+public class ldapAdConstant {
     public final static int MONDAY = 0;
     public final static int TUESDAY = 1;
     public final static int WEDNESDDAY = 2;

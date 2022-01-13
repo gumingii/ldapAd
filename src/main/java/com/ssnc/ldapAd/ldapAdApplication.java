@@ -12,6 +12,6 @@ public class ldapAdApplication {
 	
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(ldapAdApplication.class, args);
-        ctx.close();
+       // ctx.close();
 	}
 }

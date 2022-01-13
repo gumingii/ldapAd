@@ -8,4 +8,5 @@
 		DELETE FROM public.ex_emp;
 		DELETE FROM public.ex_dept;
 	</delete>
+	
 </mapper>

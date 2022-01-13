@@ -3,7 +3,7 @@ server:
 #  use-forward-headers: true
   forward-headers-strategy: NATIVE
   servlet:
-    context-path: /oasis-ldapAd
+    context-path: /oasis-ldap
   tomcat:
     remoteip: 
       remote-ip-header: x-forwarded-for

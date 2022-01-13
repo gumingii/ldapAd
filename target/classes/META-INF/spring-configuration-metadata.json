@@ -4,7 +4,7 @@
       "name": "spring.datasource.hikari",
       "type": "javax.sql.DataSource",
       "sourceType": "com.ssnc.ldapAd.config.DatasourceConfig",
-      "sourceMethod": "public javax.sql.DataSource hikariConfig() throws java.lang.Exception"
+      "sourceMethod": "hikariConfig()"
     }
   ],
   "properties": [],
