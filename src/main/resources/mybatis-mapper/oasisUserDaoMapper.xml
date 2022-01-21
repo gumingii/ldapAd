@@ -9,4 +9,27 @@
 		DELETE FROM public.ex_dept;
 	</delete>
 	
+	<insert id="insertEmpVo" parameterType="com.ssnc.ldapAd.vo.empVo">
+		INSERT INTO ex_emp2
+		(
+		 empno
+		 , company_cd
+		 , dept_cd
+		 , empname
+		 , empmail
+		 , empstatus
+		 , mobile
+		)
+		VALUES
+		(
+		 #{empno}
+		 , #{company_cd}
+		 , #{dept_cd}
+		 , #{empname}
+		 , #{empmail}
+		 , #{empstatus}
+		 , #{mobile}
+		);
+	</insert>
+	
 </mapper>

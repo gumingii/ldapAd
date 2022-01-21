@@ -39,8 +39,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssnc.ldapAd.config.ldapAdConstant;
 import com.ssnc.ldapAd.config.sstopcCommonUtil;
+import com.ssnc.ldapAd.service.oasisServiceInterface;
+import com.ssnc.ldapAd.vo.empVo;
 import com.ssnc.ldapAd.vo.ldapListVo;
 import com.ssnc.ldapAd.vo.returnMessageVo;
 
@@ -49,6 +52,9 @@ import com.ssnc.ldapAd.vo.returnMessageVo;
 @Component
 public class baseController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Autowired
+	private oasisServiceInterface oasisServiceInterface;
 	
 	@RequestMapping(value = "/system/ldap", method = { RequestMethod.GET, RequestMethod.POST })
 	public ResponseEntity<String> ldap(Model model) throws Exception {
@@ -120,14 +126,64 @@ DirContext context = new InitialDirContext(properties);
 		//sAMAccountName=Guest
 		// 인증이 확인 됬다면 usrId, usrPw, baseRdn(유저가 등록된 위치)으로 Admin에서 등록한 유저를 찾아봅시다!
 //		String searchFilter = String.format("(&(objectCategory=person)(objectClass=user))"); //user
-//		String searchFilter = String.format("(objectClass=Group)");
-		String searchFilter = String.format("(company=에스에스앤씨)");
-//		String searchFilter = String.format("(&(objectClass=*)(sAMAccountName=%s))", userid);
+//		String searchFilter = String.format("(objectClass=*)");
+//		String searchFilter = String.format("(company=에스에스앤씨)");
+//		String saearchFilter = String.format("(&(objectClass=user)(sAMAccountName=%s))", userid)
 //		String searchFilter = String.format("(cn=%s)", userid);
+
+		// ▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩  emp  ▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩
+//		ctls.setReturningAttributes(new String[] { "SAMAccountName", "company",  "department", "name", "userPrincipalName" });
+		String searchFilter = String.format(scu.getSearch());
 		NamingEnumeration<SearchResult> results = ctx.search(baseRdn, searchFilter, ctls);
-		
+
 		ldapListVo ldaplist = new ldapListVo();
 		List<Object> list = new ArrayList<Object>();
+		while (results.hasMoreElements()) {
+			logger.debug("--------------");
+			SearchResult sr = results.next();
+			Attributes attrs = sr.getAttributes();
+			//NamingEnumeration<String> ids = attrs.getIDs();
+			NamingEnumeration<Attribute> ids = (NamingEnumeration<Attribute>) attrs.getAll();
+			Map<String, Object> map = new HashMap<String, Object>();
+			
+			
+			
+			while (ids.hasMore()) {
+				Attribute atr = (Attribute) ids.next();
+				String attributeID = atr.getID();
+				
+				Enumeration vals = atr.getAll();
+				while (vals.hasMoreElements()) {
+					String element = vals.nextElement().toString();
+					 map.put(attributeID, element);
+					 logger.debug(">> " +attributeID+" : "+element);
+				}
+				
+			}
+			
+			list.add(map);
+			
+		}
+		ldaplist.setLdapList(list);
+
+		//setEmp2 : ex_emp2  기존 정보 삭제 후  DB insert
+//		oasisServiceInterface.setEmp2(ldaplist);
+//		ldaplist = oasisServiceInterface.getLdapListVo("emp");
+
+		/*
+		// ▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩  dept  ▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩▩
+		SearchControls ctls2 = new SearchControls();
+		ctls2.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		ctls2.setReturningAttributes(new String[] { "company",  "department" });
+//		ctls.setReturningAttributes(new String[] { "objectClass"});
+
+//		searchFilter = String.format(scu.getSearch());
+		searchFilter = String.format("(&(sAMAccountName=*)(company=*))");
+		results = ctx.search(baseRdn, searchFilter, ctls2);
+
+		ldapListVo ldaplist2 = new ldapListVo();
+		List<Object> list2 = new ArrayList<Object>();
+
 		while (results.hasMoreElements()) {
 			//logger.debug("--------------");
 			SearchResult sr = results.next();
@@ -137,28 +193,24 @@ DirContext context = new InitialDirContext(properties);
 			Map<String, Object> map = new HashMap<String, Object>();
 			while (ids.hasMore()) {
 				Attribute atr = (Attribute) ids.next();
-                String attributeID = atr.getID();
-                
-                for (Enumeration vals = atr.getAll(); 
-                   vals.hasMoreElements();
-                		map.put(attributeID, vals.nextElement())
-                		);
-                
-//				String id = ids.next();
-				/*Attribute idattr = attrs.get(id);
-				logger.debug(id + "(" + idattr.size() + ")");
-				
-				for (int ix = 0; ix < idattr.size(); ++ix) {
-					logger.debug(", " + ix + "/" + idattr.get(ix));
-				}
-				logger.debug("\n");*/
+				String attributeID = atr.getID();
+
+				for (Enumeration vals = atr.getAll();
+					 vals.hasMoreElements();
+					 map.put(attributeID, vals.nextElement())
+				);
 			}
-			list.add(map);
+			list2.add(map);
+			logger.debug(String.valueOf(list2));
 		}
-		ldaplist.setLdapList(list);
-		
-		//model.addAttribute("ldaplist", ldaplist.getLdapList());
-		return ResponseEntity.ok().body(ldaplist.toString());
+		ldaplist2.setLdapList(list2);
+
+		//setDept2 : ex_dept2  기존 정보 삭제 후  DB insert
+//		oasisServiceInterface.setDept2(ldaplist2);
+//		ldaplist2 = oasisServiceInterface.getLdapListVo("dept");
+		*/
+		return ResponseEntity.ok().body(String.valueOf(ldaplist));
+
 	}
 	
 	// api호출시 실행
